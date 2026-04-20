@@ -1,0 +1,248 @@
+{% schema %}
+{
+  "name": "Newsletter",
+  "tag": "section",
+  "class": "section-newsletter",
+  "settings": [
+    {
+      "type": "text",
+      "id": "heading",
+      "label": "Título",
+      "default": "Suscríbete al newsletter"
+    },
+    {
+      "type": "textarea",
+      "id": "subheading",
+      "label": "Descripción",
+      "default": "Recibe las últimas noticias y novedades directamente en tu bandeja de entrada."
+    },
+    {
+      "type": "text",
+      "id": "button_label",
+      "label": "Texto del botón",
+      "default": "Suscribirme al newsletter"
+    },
+    {
+      "type": "text",
+      "id": "success_message",
+      "label": "Mensaje de éxito",
+      "default": "¡Suscripción confirmada! Gracias por unirte."
+    },
+    {
+      "type": "checkbox",
+      "id": "show_phone",
+      "label": "Mostrar campo de teléfono",
+      "default": true
+    },
+    {
+      "type": "checkbox",
+      "id": "phone_required",
+      "label": "Teléfono obligatorio",
+      "default": false
+    },
+    {
+      "type": "header",
+      "content": "Diseño"
+    },
+    {
+      "type": "select",
+      "id": "text_alignment",
+      "label": "Alineación del encabezado",
+      "options": [
+        { "value": "left", "label": "Izquierda" },
+        { "value": "center", "label": "Centro" },
+        { "value": "right", "label": "Derecha" }
+      ],
+      "default": "center"
+    },
+    {
+      "type": "color",
+      "id": "background_color",
+      "label": "Color de fondo",
+      "default": "#ffffff"
+    },
+    {
+      "type": "color",
+      "id": "button_color",
+      "label": "Color del botón",
+      "default": "#000000"
+    },
+    {
+      "type": "color",
+      "id": "button_text_color",
+      "label": "Color del texto del botón",
+      "default": "#ffffff"
+    },
+    {
+      "type": "range",
+      "id": "padding_top",
+      "label": "Espaciado superior",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    },
+    {
+      "type": "range",
+      "id": "padding_bottom",
+      "label": "Espaciado inferior",
+      "min": 0,
+      "max": 100,
+      "step": 4,
+      "unit": "px",
+      "default": 40
+    }
+  ],
+  "presets": [
+    {
+      "name": "Newsletter"
+    }
+  ]
+}
+{% endschema %}
+
+{% comment %} sections/newsletter-form.liquid {% endcomment %}
+
+<section style="
+  background-color: {{ section.settings.background_color }};
+  padding-top: {{ section.settings.padding_top }}px;
+  padding-bottom: {{ section.settings.padding_bottom }}px;
+">
+  <div class="newsletter-form" style="text-align: {{ section.settings.text_alignment }};">
+    <h2>{{ section.settings.heading }}</h2>
+    <p>{{ section.settings.subheading }}</p>
+
+    <div id="nl-form">
+      <div class="form-row">
+        <div class="form-field">
+          <label for="FirstName">Nombre <span>*</span></label>
+          <input type="text" id="FirstName" placeholder="Ej. María" required />
+        </div>
+        <div class="form-field">
+          <label for="LastName">Apellido <span>*</span></label>
+          <input type="text" id="LastName" placeholder="Ej. García" required />
+        </div>
+      </div>
+
+      {% if section.settings.show_phone %}
+        <div class="form-field">
+          <label for="Phone">
+            Teléfono
+            {% if section.settings.phone_required %}<span>*</span>{% endif %}
+          </label>
+          <input
+            type="tel"
+            id="Phone"
+            placeholder="Ej. +52 55 1234 5678"
+            {% if section.settings.phone_required %}required{% endif %}
+          />
+        </div>
+      {% endif %}
+
+      <div class="form-field">
+        <label for="Email">Correo electrónico <span>*</span></label>
+        <input type="email" id="Email" placeholder="Ej. maria@correo.com" required />
+      </div>
+
+      <div id="nl-error" style="color: red; display: none;"></div>
+
+      <button
+        id="nl-submit"
+        type="button"
+        style="background-color: {{ section.settings.button_color }}; color: {{ section.settings.button_text_color }};"
+        onclick="submitNewsletter()"
+      >
+        {{ section.settings.button_label }}
+      </button>
+    </div>
+
+    <div id="nl-success" style="display: none;">
+      <p>{{ section.settings.success_message }}</p>
+    </div>
+  </div>
+</section>
+
+<script>
+async function submitNewsletter() {
+  const firstName = document.getElementById('FirstName').value.trim();
+  const lastName  = document.getElementById('LastName').value.trim();
+  const phone     = document.getElementById('Phone')?.value.trim() || '';
+  const email     = document.getElementById('Email').value.trim();
+  const errorEl   = document.getElementById('nl-error');
+  const btn       = document.getElementById('nl-submit');
+
+  errorEl.style.display = 'none';
+
+  if (!firstName || !lastName || !email) {
+    errorEl.textContent = 'Por favor completa los campos obligatorios.';
+    errorEl.style.display = 'block';
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Enviando...';
+
+  const mutation = `
+    mutation customerCreate($input: CustomerCreateInput!) {
+      customerCreate(input: $input) {
+        customer {
+          id
+          firstName
+          lastName
+          email
+          phone
+        }
+        customerUserErrors {
+          code
+          field
+          message
+        }
+      }
+    }
+  `;
+
+  const variables = {
+    input: {
+      firstName,
+      lastName,
+      email,
+      phone: phone || undefined,
+      acceptsMarketing: true,
+      password: Math.random().toString(36).slice(-10) + 'A1!'  // contraseña aleatoria interna, el cliente la resetea desde su email de activación
+    }
+  };
+
+  try {
+    const response = await fetch('/api/2024-01/graphql.json', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'X-Shopify-Storefront-Access-Token': '{{ settings.storefront_access_token }}'
+      },
+      body: JSON.stringify({ query: mutation, variables })
+    });
+
+    const { data } = await response.json();
+    const errors = data?.customerCreate?.customerUserErrors;
+
+    if (errors && errors.length > 0) {
+      const msg = errors[0].code === 'CUSTOMER_DISABLED'
+        ? 'Ya existe una cuenta con este correo. Revisa tu email para activarla.'
+        : errors[0].message;
+      errorEl.textContent = msg;
+      errorEl.style.display = 'block';
+      btn.disabled = false;
+      btn.textContent = '{{ section.settings.button_label }}';
+    } else {
+      document.getElementById('nl-form').style.display = 'none';
+      document.getElementById('nl-success').style.display = 'block';
+    }
+  } catch (e) {
+    errorEl.textContent = 'Ocurrió un error. Intenta de nuevo.';
+    errorEl.style.display = 'block';
+    btn.disabled = false;
+    btn.textContent = '{{ section.settings.button_label }}';
+  }
+}
+</script>

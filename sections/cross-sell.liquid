@@ -1,0 +1,89 @@
+<div class="cross-sell-wrapper">
+  <h2 class="cross-sell-title">Vous aimerez aussi</h2>
+
+  <div class="cross-sell-list" id="cross-sell-list"></div>
+</div>
+
+<style>
+  .cross-sell-wrapper {
+    width: 100%;
+    margin-top: 20px;
+  }
+
+  .cross-sell-title {
+    font-size: 16px;
+    font-weight: 500;
+    margin-bottom: 12px;
+  }
+
+  .cross-sell-list {
+    display: flex;
+    gap: 14px;
+    overflow-x: auto;
+    padding-bottom: 6px;
+  }
+
+  .cross-sell-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    background: #f4f4f4;
+    padding: 14px 18px;
+    border-radius: 999px;
+    min-width: 180px;
+    text-align: center;
+    text-decoration: none;
+    color: black;
+    transition: transform 0.2s ease;
+  }
+
+  .cross-sell-item:hover {
+    transform: translateY(-3px);
+  }
+
+  .cross-sell-item img {
+    width: 85px;
+    height: auto;
+    margin-bottom: 6px;
+  }
+
+  .cross-sell-item .title {
+    font-size: 13px;
+    font-weight: bold;
+    margin-bottom: 4px;
+    white-space: nowrap;
+  }
+
+  .cross-sell-item .price {
+    font-size: 13px;
+    opacity: 0.8;
+  }
+
+  /* Scroll invisible */
+  .cross-sell-list::-webkit-scrollbar {
+    display: none;
+  }
+</style>
+
+<script>
+  fetch(`/recommendations/products.json?product_id={{ product.id }}&limit=4`)
+    .then(res => res.json())
+    .then(data => {
+      const container = document.querySelector('#cross-sell-list');
+
+      if (!data.products || data.products.length === 0) {
+        document.querySelector('.cross-sell-wrapper').style.display = 'none';
+        return;
+      }
+
+      data.products.forEach(p => {
+        container.innerHTML += `
+          <a class="cross-sell-item" href="/products/${p.handle}">
+            <img src="${p.featured_image}" alt="${p.title}" height=50px>
+            <p class="title">${p.title}</p>
+            <p class="price">${(p.price / 100).toLocaleString('fr-FR', { style: 'currency', currency: 'EUR' })}</p>
+          </a>
+        `;
+      });
+    });
+</script>

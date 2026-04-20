@@ -1,0 +1,43 @@
+/*
+ * ------------------------------------------------------------
+ * IMPORTANT: The contents of this file are auto-generated.
+ *
+ * This file may be updated by the Shopify admin theme editor
+ * or related systems. Please exercise caution as any changes
+ * made to this file may be overwritten.
+ * ------------------------------------------------------------
+ */
+{
+  "sections": {
+    "main": {
+      "type": "main-page",
+      "disabled": true,
+      "settings": {
+        "padding_top": 28,
+        "padding_bottom": 28
+      }
+    },
+    "formulario_Fr7afG": {
+      "type": "formulario",
+      "name": "Newsletter",
+      "settings": {
+        "heading": "Suscríbete al newsletter",
+        "subheading": "Recibe las últimas noticias y novedades directamente en tu bandeja de entrada.",
+        "button_label": "Suscribirme al newsletter",
+        "success_message": "¡Suscripción confirmada! Gracias por unirte.",
+        "show_phone": true,
+        "phone_required": false,
+        "text_alignment": "center",
+        "background_color": "#ffffff",
+        "button_color": "#000000",
+        "button_text_color": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
+    }
+  },
+  "order": [
+    "main",
+    "formulario_Fr7afG"
+  ]
+}

@@ -1,0 +1,18 @@
+# Local Shopify CLI & ThemeKit Config
+config/settings_data.json
+config/shopify.yml
+.shopify/
+.env
+.env.*
+
+# Build Artifacts (if using Vite/Webpack)
+node_modules/
+dist/
+assets/*.js.map
+assets/*.css.map
+
+# System & Log files
+.DS_Store
+*.log
+npm-debug.log*
+
