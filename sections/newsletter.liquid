@@ -14,6 +14,14 @@
     }
   }
 {%- endstyle -%}
+<style>
+.newsletter-form__button:not(:focus-visible):not(.focused){
+  background: grey !important;
+}
+.newsletter-form__field-wrapper .field {
+  display: block;
+}
+</style>
 
 <div class="newsletter center {% if section.settings.full_width == false %}newsletter--narrow page-width{% endif %}">
   <div class="newsletter__wrapper color-{{ section.settings.color_scheme }} gradient content-container isolate{% if section.settings.full_width %} content-container--full-width{% endif %} section-{{ section.id }}-padding">
@@ -53,6 +61,40 @@
                     placeholder="{{ 'newsletter.label' | t }}"
                     required
                   >
+                  <!-- Campo Nombre -->
+                  <div class="field">
+                    <input
+                      type="text"
+                      name="contact[first_name]"
+                      class="field__input"
+                      placeholder="Nombre"
+                      required
+                    >
+                    <label class="field__label">Nombre</label>
+                  </div>
+
+                  <!-- Campo Teléfono -->
+                  <div class="field">
+                    <input
+                      type="tel"
+                      name="customer[phone]"
+                      class="field__input"
+                      placeholder="Teléfono"
+                    >
+                    <label class="field__label">Teléfono</label>
+                  </div>
+
+                  <!-- Campo Apellido -->
+                  <div class="field">
+                    <input
+                      type="text"
+                      name="contact[last_name]"
+                      class="field__input"
+                      placeholder="Apellido"
+                    >
+                    <label class="field__label">Apellido</label>
+                  </div>
+
                   <label class="field__label" for="NewsletterForm--{{ section.id }}">
                     {{ 'newsletter.label' | t }}
                   </label>
