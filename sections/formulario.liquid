@@ -103,146 +103,18 @@
 {% endschema %}
 
 {% comment %} sections/newsletter-form.liquid {% endcomment %}
+{% form 'create_customer' %}
+  <label for="CustomerFirstName">Nombre</label>
+  <input type="text" id="CustomerFirstName" name="customer[first_name]" required>
 
-<section style="
-  background-color: {{ section.settings.background_color }};
-  padding-top: {{ section.settings.padding_top }}px;
-  padding-bottom: {{ section.settings.padding_bottom }}px;
-">
-  <div class="newsletter-form" style="text-align: {{ section.settings.text_alignment }};">
-    <h2>{{ section.settings.heading }}</h2>
-    <p>{{ section.settings.subheading }}</p>
+  <label for="CustomerLastName">Apellido</label>
+  <input type="text" id="CustomerLastName" name="customer[last_name]" required>
 
-    <div id="nl-form">
-      <div class="form-row">
-        <div class="form-field">
-          <label for="FirstName">Nombre <span>*</span></label>
-          <input type="text" id="FirstName" placeholder="Ej. María" required />
-        </div>
-        <div class="form-field">
-          <label for="LastName">Apellido <span>*</span></label>
-          <input type="text" id="LastName" placeholder="Ej. García" required />
-        </div>
-      </div>
+  <label for="CustomerEmail">Email</label>
+  <input type="email" id="CustomerEmail" name="customer[email]" required>
 
-      {% if section.settings.show_phone %}
-        <div class="form-field">
-          <label for="Phone">
-            Teléfono
-            {% if section.settings.phone_required %}<span>*</span>{% endif %}
-          </label>
-          <input
-            type="tel"
-            id="Phone"
-            placeholder="Ej. +52 55 1234 5678"
-            {% if section.settings.phone_required %}required{% endif %}
-          />
-        </div>
-      {% endif %}
+  <label for="CustomerPhone">Teléfono</label>
+  <input type="tel" id="CustomerPhone" name="customer[phone]">
 
-      <div class="form-field">
-        <label for="Email">Correo electrónico <span>*</span></label>
-        <input type="email" id="Email" placeholder="Ej. maria@correo.com" required />
-      </div>
-
-      <div id="nl-error" style="color: red; display: none;"></div>
-
-      <button
-        id="nl-submit"
-        type="button"
-        style="background-color: {{ section.settings.button_color }}; color: {{ section.settings.button_text_color }};"
-        onclick="submitNewsletter()"
-      >
-        {{ section.settings.button_label }}
-      </button>
-    </div>
-
-    <div id="nl-success" style="display: none;">
-      <p>{{ section.settings.success_message }}</p>
-    </div>
-  </div>
-</section>
-
-<script>
-async function submitNewsletter() {
-  const firstName = document.getElementById('FirstName').value.trim();
-  const lastName  = document.getElementById('LastName').value.trim();
-  const phone     = document.getElementById('Phone')?.value.trim() || '';
-  const email     = document.getElementById('Email').value.trim();
-  const errorEl   = document.getElementById('nl-error');
-  const btn       = document.getElementById('nl-submit');
-
-  errorEl.style.display = 'none';
-
-  if (!firstName || !lastName || !email) {
-    errorEl.textContent = 'Por favor completa los campos obligatorios.';
-    errorEl.style.display = 'block';
-    return;
-  }
-
-  btn.disabled = true;
-  btn.textContent = 'Enviando...';
-
-  const mutation = `
-    mutation customerCreate($input: CustomerCreateInput!) {
-      customerCreate(input: $input) {
-        customer {
-          id
-          firstName
-          lastName
-          email
-          phone
-        }
-        customerUserErrors {
-          code
-          field
-          message
-        }
-      }
-    }
-  `;
-
-  const variables = {
-    input: {
-      firstName,
-      lastName,
-      email,
-      phone: phone || undefined,
-      acceptsMarketing: true,
-      password: Math.random().toString(36).slice(-10) + 'A1!'  // contraseña aleatoria interna, el cliente la resetea desde su email de activación
-    }
-  };
-
-  try {
-    const response = await fetch('/api/2024-01/graphql.json', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'X-Shopify-Storefront-Access-Token': '{{ settings.storefront_access_token }}'
-      },
-      body: JSON.stringify({ query: mutation, variables })
-    });
-
-    const { data } = await response.json();
-    const errors = data?.customerCreate?.customerUserErrors;
-
-    if (errors && errors.length > 0) {
-      const msg = errors[0].code === 'CUSTOMER_DISABLED'
-        ? 'Ya existe una cuenta con este correo. Revisa tu email para activarla.'
-        : errors[0].message;
-      errorEl.textContent = msg;
-      errorEl.style.display = 'block';
-      btn.disabled = false;
-      btn.textContent = '{{ section.settings.button_label }}';
-    } else {
-      document.getElementById('nl-form').style.display = 'none';
-      document.getElementById('nl-success').style.display = 'block';
-    }
-  } catch (e) {
-    errorEl.textContent = 'Ocurrió un error. Intenta de nuevo.';
-    errorEl.style.display = 'block';
-    btn.disabled = false;
-    btn.textContent = '{{ section.settings.button_label }}';
-  }
-}
-</script>
+  <button type="submit">Suscribirse</button>
+{% endform %}
