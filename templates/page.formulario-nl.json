@@ -17,24 +17,6 @@
         "padding_bottom": 28
       }
     },
-    "formulario_Fr7afG": {
-      "type": "formulario",
-      "name": "Newsletter",
-      "settings": {
-        "heading": "Suscríbete al newsletter",
-        "subheading": "Recibe las últimas noticias y novedades directamente en tu bandeja de entrada.",
-        "button_label": "Suscribirme al newsletter",
-        "success_message": "¡Suscripción confirmada! Gracias por unirte.",
-        "show_phone": true,
-        "phone_required": false,
-        "text_alignment": "center",
-        "background_color": "#ffffff",
-        "button_color": "#000000",
-        "button_text_color": "#ffffff",
-        "padding_top": 40,
-        "padding_bottom": 40
-      }
-    },
     "newsletter_q8R8cm": {
       "type": "newsletter",
       "blocks": {
@@ -68,11 +50,29 @@
         "padding_top": 40,
         "padding_bottom": 52
       }
+    },
+    "formulario_Fr7afG": {
+      "type": "formulario",
+      "name": "Newsletter",
+      "settings": {
+        "heading": "Suscríbete al newsletter",
+        "subheading": "Recibe las últimas noticias y novedades directamente en tu bandeja de entrada.",
+        "button_label": "Suscribirme al newsletter",
+        "success_message": "¡Suscripción confirmada! Gracias por unirte.",
+        "show_phone": true,
+        "phone_required": false,
+        "text_alignment": "center",
+        "background_color": "#ffffff",
+        "button_color": "#000000",
+        "button_text_color": "#ffffff",
+        "padding_top": 40,
+        "padding_bottom": 40
+      }
     }
   },
   "order": [
     "main",
-    "formulario_Fr7afG",
-    "newsletter_q8R8cm"
+    "newsletter_q8R8cm",
+    "formulario_Fr7afG"
   ]
 }
