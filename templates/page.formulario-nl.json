@@ -19,7 +19,6 @@
     },
     "formulario_Fr7afG": {
       "type": "formulario",
-      "disabled": true,
       "name": "Newsletter",
       "settings": {
         "heading": "Suscríbete al newsletter",
@@ -62,6 +61,7 @@
         "paragraph_mwBVB8",
         "email_form_7MbbNk"
       ],
+      "disabled": true,
       "name": "t:sections.newsletter.presets.name",
       "settings": {
         "color_scheme": "background-1",
