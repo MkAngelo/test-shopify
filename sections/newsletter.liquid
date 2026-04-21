@@ -127,6 +127,27 @@
                   {{- 'newsletter.success' | t }}
                 </h3>
               {%- endif -%}
+                <script>
+                  document.addEventListener('DOMContentLoaded', function() {
+                    const form = document.querySelector('.newsletter-form');
+                    
+                    form.addEventListener('submit', function(e) {
+                      e.preventDefault();
+                      
+                      const phone = form.querySelector('input[name="contact[phone]"]').value;
+                      const email = form.querySelector('input[name="contact[email]"]').value;
+                      
+                      // 1. Guardamos el teléfono en localStorage temporalmente
+                      if (phone) {
+                        localStorage.setItem('pending_phone', phone);
+                        localStorage.setItem('pending_email', email);
+                      }
+                      
+                      // 2. Enviamos el formulario normal de Shopify
+                      form.submit();
+                    });
+                  });
+                  </script>
             {% endform %}
           </div>
       {%- endcase -%}
